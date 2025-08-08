@@ -99,15 +99,73 @@ systemd = 1
 
 This project uses [`uv`](https://github.com/astral-sh/uv), a fast Python package installer and runner, for managing dependencies.
 
+uv installation 
+```bash
+# On macOS and Linux.
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+If you're using Ubuntu or WSL2:
+
+```bash
+sudo apt update
+sudo apt install libpq-dev
+```
+Then try again:
+
+```bash
+uv pip install -r requirements.txt
+```
+This installs pg_config and the necessary headers for building the C extension.
+
+
 Load GeoJSON data into your PostGIS database:
 ```bash
 uv run ingest.py
 ```
 Follow the prompts to select GeoJSON files and specify table names.
 
+```bash
+
+$ uv run ingest.py
+Connected to PostGIS version: 3.5 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
+Enter the path to your GeoJSON file: /home/wooj/Documents/github/I-GUIDE-PostGIS/data/utah_dams_inundation.geojson 
+Enter the name for the PostGIS table: utah_dams 
+Enter source SRID (press Enter for auto-detection): 
+Enter target SRID (press Enter for 4326/WGS84): 
+
+
+$ uv run ingest.py
+Connected to PostGIS version: 3.5 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
+Enter the path to your GeoJSON file: /home/wooj/Documents/github/I-GUIDE-PostGIS/data/power_plants.geojson 
+Enter the name for the PostGIS table: power_plants
+Enter source SRID (press Enter for auto-detection): 
+Enter target SRID (press Enter for 4326/WGS84): 
+...
+
+```
+
 ---
 
 ## Use Case: Dam Inundation Risk Analysis
+
+Install Jupyterlab if you have not.
+
+Option 1: Use a Virtual Environment (Recommended)
+This avoids messing with system Python:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install jupyterlab
+```
+Then run it with:
+
+```bash
+.venv/bin/jupyter-lab
+```
+
+
 
 The primary analysis in `query_1.ipynb` focuses on:
 1. Identifying vulnerable entities (e.g., power plants) within dam inundation zones
