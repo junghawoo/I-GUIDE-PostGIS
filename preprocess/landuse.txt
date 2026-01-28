@@ -1,3 +1,13 @@
-export PGPASSWORD='admin'
-export PROJ_LIB=/opt/homebrew/Caskroom/miniforge/base/envs/postgis-env/share/proj
-raster2pgsql -s 4326 -I -C -M -F -t 100x100 /Users/xiaoliu/Work/Project/I-GUIDE/IGUIDE_Aging_Dam-selected/Annual_NLCD_LndCov_2024_CU_C1V1/Annual_NLCD_LndCov_2024_CU_C1V1.tif public.landuse2024 | psql -h localhost -U admin -p 5432 -d utahdaminundationprofiles_aug9_2025
+#export PGPASSWORD='admin'
+#export PROJ_LIB=/opt/homebrew/Caskroom/miniforge/base/envs/postgis-env/share/proj
+
+With docker shell run: apt-get update && apt-get install -y postgis postgresql-client
+apt-get update && apt-get install -y gdal-bin
+
+docker cp /Users/xiaoliu/Work/Project/I-GUIDE/IGUIDE_Aging_Dam-selected/Annual_NLCD_LndCov_2024_CU_C1V1/Annual_NLCD_LndCov_2024_CU_C1V1.tif b64f54176c2432f73dd09dc6f25119f96a03bbb5071c432676f0e275fc38f034:/tmp/Annual_NLCD_LndCov_2024_CU_C1V1.tif
+
+With docker shell run command below: 
+
+gdalwarp -t_srs EPSG:4326 /tmp/Annual_NLCD_LndCov_2024_CU_C1V1.tif /tmp/Annual_NLCD_4326.tif
+
+raster2pgsql -d -s 4326 -I -C -M -F -t 100x100 /tmp/Annual_NLCD_4326.tif public.landuse2024 | psql -h localhost -U admin -p 5432 -d utahdaminundationprofiles_aug9_2025
